@@ -74,6 +74,27 @@ function makeAStep()
     $isOpen=(boolean)fputs(fopen($this->getMoveResource(),"w"),$player);
     $player2=json_encode($player2);
     $isOpen=(boolean)fputs(fopen($this->getNotMoveResource(),"w"),$player2);
+    $hit;
+    for($i=0;$i<100;$i++)
+    {
+        if($player->fieldMoveArray->cellCondition==2)
+        {
+$hit=$hit+1;
+        }
+    }
+    if($hit==20)
+    {
+        echo '<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<meta charset="utf-8">
+</head>
+<body>
+Победил игрок:'.$player->name.'
+</body>
+</html>';
+    }
     $this->changeOfCourse();
 }
  
