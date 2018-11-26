@@ -5,49 +5,48 @@ class Controller
 {
     function changeOfCourse()
 {
-    $fieldResource="C:\\battleship\\field1.json";
-    $player=file_get_contents($fieldResource);
+    $fieldResource1="C:\\battleship\\field1.json";
+    $player=file_get_contents($fieldResource1);
     $player=json_decode($player);
-    $player->isMove=!$player->isMove;
+    $player->isMove=!($player->isMove);
     $player=json_encode($player);
-    $resource=fopen($fieldResource,"w");
-    fputs($resource,$player);
-    $fieldResource="C:\\battleship\\field2.json";
-    $player=file_get_contents($fieldResource);
+    $resource1=fopen($fieldResource1,"w");
+    fputs($resource1,$player);
+    $fieldResource2="C:\\battleship\\field2.json";
+    $player=file_get_contents($fieldResource2);
     $player=json_decode($player);
-    $player->isMove=!$player->isMove;
+    $player->isMove=!($player->isMove);
     $player=json_encode($player);
-    $resource=fopen($fieldResource,"w");
-    fputs($resource,$player);
+    $resource2=fopen($fieldResource2,"w");
+    fputs($resource2,$player);
 }
 
 function setPlayer()
 {
     $cellMassive=[];
     $moveCellMassive=[];
-
     for($i=1;$i<=100;$i++)
     {
     	$cellMassive[]=new Cell($i,0);
     	$moveCellMassive[]=new Cell($i,0);
     }
-
     foreach ($_GET['cell'] as $value) 
     {
+        
     	$cellMassive[(int)$value-1]->cellCondition=1;
     }
     if(filesize("C:\\battleship\\field1.json")!=0)
     {
-    	$fieldResource=fopen("C:\\battleship\\field2.json", "r+");
+    	$fieldResource=fopen("C:\\battleship\\field2.json", "w");
     	$player=new Player($cellMassive,$_GET['name'],$moveCellMassive,false);
     }
     else
     {
     $player=new Player($cellMassive,$_GET['name'],$moveCellMassive,true);
-    $fieldResource=fopen("C:\\battleship\\field1.json", "r+");
+    $fieldResource=fopen("C:\\battleship\\field1.json", "w");
     }
     $player=json_encode($player);
-    $isOpen=fputs(fopen($this->getMoveResource(),"w"),$player);
+    $isOpen=fputs($fieldResource,$player);
 
 }
 
@@ -58,44 +57,34 @@ function makeAStep()
  $player=json_decode($player);
  $player2=file_get_contents($this->getNotMoveResource());
  $player2=json_decode($player2);
+$Hit=0;
     echo 'Ход игрока:'.$player->name;
-    if($player2->fieldArray[$_GET['numOfCell']]->cellCondition==1)
+    if(!empty($_GET['numOfCell']))
+     {   
+
+    if($player2->fieldArray[(int)$_GET['numOfCell']]->cellCondition==1)
 	{
-		$player2->fieldArray[$_GET['numOfCell']]->cellCondition=3;//состояние при пробитой палубе=3
-		$player->fieldMoveArray[$_GET['numOfCell']]=2;
-		makeAStep();
+		$player2->fieldArray[(int)$_GET['numOfCell']]->cellCondition=3;//состояние при пробитой палубе=3
+		$player->fieldMoveArray[(int)$_GET['numOfCell']]=2;
+        $Hit=1;
+		
 	}
-	if(	$player2->fieldArray[$_GET['numOfCell']]->cellCondition==0)
+	if(	$player2->fieldArray[(int)$_GET['numOfCell']]->cellCondition!=1)
 	{
-			$player2->fieldArray[$_GET['numOfCell']]->cellCondition=2;//состояние при промахе=2
-			$player->fieldMoveArray[$_GET['numOfCell']]=1;		
+
+			$player2->fieldArray[(int)$_GET['numOfCell']]->cellCondition=2;//состояние при промахе=2
+			$player->fieldMoveArray[(int)$_GET['numOfCell']]=1;
+            echo $_GET['numOfCell'];	
 	}
 	$player=json_encode($player);
     $isOpen=(boolean)fputs(fopen($this->getMoveResource(),"w"),$player);
     $player2=json_encode($player2);
     $isOpen=(boolean)fputs(fopen($this->getNotMoveResource(),"w"),$player2);
-    $hit;
-    for($i=0;$i<100;$i++)
-    {
-        if($player->fieldMoveArray->cellCondition==2)
-        {
-$hit=$hit+1;
-        }
-    }
-    if($hit==20)
-    {
-        echo '<!DOCTYPE html>
-<html>
-<head>
-<title></title>
-<meta charset="utf-8">
-</head>
-<body>
-Победил игрок:'.$player->name.'
-</body>
-</html>';
-    }
+    if($Hit==0)
     $this->changeOfCourse();
+    
+}
+
 }
  
 function setController()
@@ -145,8 +134,8 @@ $head='<!DOCTYPE html>
 </head>
 ';
 $body='<body>
-<form method="GET" id="my_form" action="index.php"></form>
-ВВЕДИТЕ ИМЯ:<input type="text" name="name">
+<form method="GET" id="my_form"></form>
+ВВЕДИТЕ ИМЯ:<input type="text" name="name" form="my_form">
 <table>
 <tr>
 <td> </td>
@@ -328,15 +317,16 @@ if(filesize("C:\\battleship\\field2.json")!=0)
  		{
         $body=$body.'
         <td bgcolor="#999900"><a href="index.php?action=makeAStep&numOfCell='.$index.'"></a></td>';
-
  		}
  		if($player->fieldMoveArray[$i+$j]->cellCondition==1)
  		{
+            
  			$body=$body.'
  			<td bgcolor="#FFFFFF"><a action=makeAStep></a></td>';
  		}
  		if($player->fieldMoveArray[$i+$j]->cellCondition==2)
  		{
+            
  			$body=$body.'
  			<td bgcolor="#FF0000"><a action=makeAStep></a></td>';
  		}
