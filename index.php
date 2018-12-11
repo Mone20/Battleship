@@ -1,8 +1,10 @@
 
 <?php
+spl_autoload_register(function ($class_name) {
+    include $class_name . '.php';
+});
 require 'Controller.php';
-require 'createHtml.php';
+// $pdo=new PDO('pgsql:host=localhost; dbname=BattleShip', 'artur','Oprznogr1');
 $controller=new Controller;
-$controller->createHtml();
 $controller->setController();
 ?>
