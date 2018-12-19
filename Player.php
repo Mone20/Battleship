@@ -2,14 +2,16 @@
 <?php
 class Player
 {
-	public  $fieldArray;
+
 	public  $name;
 	public  $isMove;
-	function __construct($name,$fieldArray,$ismove)
+	public $idPlayer;
+	function __construct($name,$ismove,$id)
 	{
-		$this->fieldArray=$fieldArray;
+		
 		$this->name=$name;
 		$this->isMove=$ismove;
+		$this->idPlayer=$id;
 	}
 
 }
