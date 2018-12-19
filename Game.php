@@ -1,10 +1,10 @@
 <?php
 class Game
 {
-	public: $timeBegin;
-	$timeEnd;
-	$nameWinner;
-	$nameLoser;
+	public $timeBegin;
+	 public $timeEnd;
+	public $nameWinner;
+	public $nameLoser;
 	function __construct($begin,$end,$win,$los)
 	{
 	$timeBegin=$begin;
@@ -12,5 +12,7 @@ class Game
 	$nameWinner=$win;
 	$nameLoser=$los;
 	}
+
+	
 }
 ?>
